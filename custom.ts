@@ -1,8 +1,8 @@
 /**
-* MakeCode editor extension for DHT11 humidity/temperature sensor
-* by Alan Wang https://github.com/alankrantas/pxt-dht11_dht22
-* Changes by M. Klein 13.1.2024
-*/
+  * MakeCode editor extension for DHT11 humidity/temperature sensor
+  * by Alan Wang https://github.com/alankrantas/pxt-dht11_dht22
+  * Changes by M. Klein 13 & 14.1.2024
+  */
 
 
 //% color=#2159b2 icon="\uf2c9" block="DHT11"
@@ -12,11 +12,12 @@ namespace DHT11 {
     let _humidity: number = -999.0
     let _readSuccessful: boolean = false
     let _sensorresponding: boolean = false
-    let dht11Pin: DigitalPin = DigitalPin.C16;
+    let dht11Pin: DigitalPin = DigitalPin.C16
     let dht11startTime: number = 0
+    let dht11WaitTime: number = 2000
 
     //% blockId=setPin block="DHT11 at pin %myPin"
-    //% myPin.defl=DigitalPin.C16
+    //% myPin.defl=DigitalPin.C16 weight=100
     //% myPin.fieldEditor="gridpicker" myPin.fieldOptions.columns=4
     //% myPin.fieldOptions.tooltips="false" myPin.fieldOptions.width="300"
     export function setPin(myPin: DigitalPin): void {
@@ -49,7 +50,7 @@ namespace DHT11 {
         control.waitMicros(40)
 
         if (pins.digitalReadPin(dataPin) == 1) {
-            //basic.showString("dht11 not responding")
+            serial.writeLine("dht11 not responding")
         } else {
             _sensorresponding = true
 
@@ -79,23 +80,25 @@ namespace DHT11 {
 
             //read data if checksum ok
             if (_readSuccessful) {
+
                 _humidity = resultArray[0] + resultArray[1] / 100
                 _temperature = Math.round(resultArray[2] + resultArray[3] / 100)
-            }
+            } else
+                serial.writeLine("checksumerror")
         }
         dht11startTime = input.runningTime()
     }
 
     //% blockId=humidity block="humidity in percent"
     export function humidity(): number {
-        if (1300 > (input.runningTime() - dht11startTime)) { basic.pause(1300 - (input.runningTime() - dht11startTime)) }
+        if (dht11WaitTime > (input.runningTime() - dht11startTime)) { basic.pause(dht11WaitTime - (input.runningTime() - dht11startTime)) }
         queryData(dht11Pin);
         return _humidity
     }
 
     //% blockId=temperature block="temperature in ˚C"       
     export function temperature(): number {
-        if (1300 > (input.runningTime() - dht11startTime)) { basic.pause(1300 - (input.runningTime() - dht11startTime)) }
+        if (dht11WaitTime > (input.runningTime() - dht11startTime)) { basic.pause(dht11WaitTime - (input.runningTime() - dht11startTime)) }
         queryData(dht11Pin);
         return _temperature
     }
