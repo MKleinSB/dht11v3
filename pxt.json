@@ -3,13 +3,17 @@
     "description": "",
     "dependencies": {
         "core": "*",
-        "v3": "*"
+        "v3": "*",
+        "jacdac": "github:microsoft/pxt-jacdac#v1.9.25",
+        "jacdac-temperature": "github:microsoft/pxt-jacdac/temperature#v1.9.25",
+        "jacdac-humidity": "github:microsoft/pxt-jacdac/humidity#v1.9.25"
     },
     "files": [
         "main.blocks",
         "main.ts",
         "README.md",
-        "custom.ts"
+        "custom.ts",
+        "dht11.jacdac.ts"
     ],
     "testFiles": [
         "test.ts"
@@ -21,5 +25,14 @@
     "supportedTargets": [
         "calliopemini"
     ],
-    "preferredEditor": "tsprj"
+    "preferredEditor": "tsprj",
+    "yotta": {
+        "config": {
+            "microbit-dal": {
+                "bluetooth": {
+                    "enabled": 0
+                }
+            }
+        }
+    }
 }
